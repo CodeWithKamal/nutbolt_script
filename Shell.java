@@ -6,14 +6,27 @@ public class Shell {
         while (true) {
             System.out.print("basic > ");
             String text = myObj.nextLine();
-            Lexer lexer = new Lexer("<stdin>", text);
-            LexResult result = lexer.run("<stdin>", text);
+            if (text.equals("exit()")) {
+                myObj.close();
+                break;
+            }
 
-            if(result.error != null) {
-                System.out.println(result.error.toString());
+            Lexer lexer = new Lexer("<stdin>", text);
+            LexResult lexResult = lexer.make_tokens();
+
+            if(lexResult.error != null) {
+                System.out.println(lexResult.error.toString());
             } else {
-                System.out.println(result.tokens.toString());
+                Parser parser = new Parser(lexResult.tokens);
+                ParseResult ast = parser.parse();
+
+                if(ast.error != null) {
+                    System.out.println(ast.error.toString());
+                } else {
+                    System.out.println(ast.node.toString());
+                }
             }
         }
+        
     }
 }

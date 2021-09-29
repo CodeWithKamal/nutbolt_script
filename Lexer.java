@@ -1,7 +1,5 @@
 import java.util.List;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 /**
  * 
  *  LEXER
@@ -37,22 +35,22 @@ public class Lexer {
             if(this.current_char == ' ' || this.current_char == '\t'){
                 this.advance();
             } else if(this.current_char == '+') {
-                tokens.add(new Token(Type.PLUS, null));
+                tokens.add(new Token(Type.PLUS, null, this.pos, null));
                 this.advance();
             } else if(this.current_char == '-') {
-                tokens.add(new Token(Type.MINUS, null));
+                tokens.add(new Token(Type.MINUS, null, this.pos, null));
                 this.advance();
             } else if(this.current_char == '*') {
-                tokens.add(new Token(Type.MUL, null));
+                tokens.add(new Token(Type.MUL, null, this.pos, null));
                 this.advance();
             } else if(this.current_char == '/') {
-                tokens.add(new Token(Type.DIV, null));
+                tokens.add(new Token(Type.DIV, null, this.pos, null));
                 this.advance();
             } else if(this.current_char == '(') {
-                tokens.add(new Token(Type.LPAREN, null));
+                tokens.add(new Token(Type.LPAREN, null, this.pos, null));
                 this.advance();
             } else if(this.current_char == ')') {
-                tokens.add(new Token(Type.RPAREN, null));
+                tokens.add(new Token(Type.RPAREN, null, this.pos, null));
                 this.advance();
             } else if(Character.isDigit(this.current_char)) {
                 tokens.add(this.make_number());
@@ -65,12 +63,14 @@ public class Lexer {
             }
         }
 
+        tokens.add(new Token(Type.EOF, null, this.pos, null));
         return new LexResult(tokens, null);
     }
 
     public Token make_number() {
         String num_str = "";
         int dot_count = 0;
+        Position pos_start = this.pos.copy();
 
         while ((this.current_char != Character.MIN_VALUE) && (Character.isDigit(this.current_char) || Character.toString(this.current_char).contains("."))) {
             if (this.current_char == '.') {
@@ -87,16 +87,9 @@ public class Lexer {
 
         this.pos.idx--;
         if (dot_count == 0) {
-            return new Token(Type.INT, num_str);
+            return new Token(Type.INT, num_str, pos_start, this.pos);
         } else {
-            return new Token(Type.FLOAT, num_str);
+            return new Token(Type.FLOAT, num_str, pos_start, this.pos);
         }
-    }
-
-    public LexResult run(String fn ,String text) {
-        Lexer lexer = new Lexer(fn, text);
-        LexResult result = lexer.make_tokens();
-
-        return result;
     }
 }
