@@ -29,7 +29,7 @@ public class Lexer {
     }
 
     public LexResult make_tokens() {
-        List<Token> tokens = new ArrayList();
+        List<Token> tokens = new ArrayList<Token>();
 
         while (this.current_char != Character.MIN_VALUE) {
             if(this.current_char == ' ' || this.current_char == '\t'){
