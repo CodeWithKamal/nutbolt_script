@@ -41,6 +41,8 @@ public class Interpreter {
             result = left.multed_by(right);
         } else if(((BinOpNode)node).op_tok.type == Type.DIV) {
             result = left.dived_by(right);
+        } else if(((BinOpNode)node).op_tok.type == Type.POW) {
+            result = left.powed_by(right);
         }
         
         if (((RunTimeResult)result).error != null) {

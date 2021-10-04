@@ -46,6 +46,9 @@ public class Lexer {
             } else if(this.current_char == '/') {
                 tokens.add(new Token(Type.DIV, null, this.pos, null));
                 this.advance();
+            } else if(this.current_char == '^') {
+                tokens.add(new Token(Type.POW, null, this.pos, null));
+                this.advance();
             } else if(this.current_char == '(') {
                 tokens.add(new Token(Type.LPAREN, null, this.pos, null));
                 this.advance();

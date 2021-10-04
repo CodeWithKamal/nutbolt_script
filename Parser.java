@@ -28,17 +28,11 @@ public class Parser {
         return res;
     }
 
-    public Object factor() {
+    public Object atom() {
         ParseResult res = new ParseResult();
         Token tok = this.current_tok;
 
-        if (tok.type == Type.PLUS || tok.type == Type.MINUS) {
-            res.register(this.advance());
-            Object factor = res.register(this.factor());
-            if (res.error != null) return res;
-            return res.success(new UnaryOpNode(tok, factor));
-
-        } else if(tok.type == Type.INT || tok.type== Type.FLOAT) {
+        if(tok.type == Type.INT || tok.type== Type.FLOAT) {
             res.register(this.advance());
             return res.success(new NumberNode(tok));
         } else if (tok.type == Type.LPAREN) {
@@ -52,8 +46,39 @@ public class Parser {
                 return res.failure(new InvalidSyntaxError(this.current_tok.pos_start, this.current_tok.pos_end, "Expected ')'"));
             }
         }
+
+        return res.failure(new InvalidSyntaxError(tok.pos_start, tok.pos_end, "Expected int, float, '+', '-', or '('"));
+    }
+
+    public Object power() {
+        ParseResult res = new ParseResult();
+        Object left = res.register(this.atom());
+        if (res.error != null) return res;
+
+        while(this.current_tok.type == Type.POW) {
+            Token op_tok = this.current_tok;
+            res.register(this.advance());
+            Object right = res.register(this.factor());
+            if (res.error != null) return res;
+            left = new BinOpNode(left, op_tok, right);
+        }
+
+        return res.success(left);
+    }
+
+    public Object factor() {
+        ParseResult res = new ParseResult();
+        Token tok = this.current_tok;
+
+        if (tok.type == Type.PLUS || tok.type == Type.MINUS) {
+            res.register(this.advance());
+            Object factor = res.register(this.factor());
+            if (res.error != null) return res;
+            return res.success(new UnaryOpNode(tok, factor));
+
+        }
         
-        return res.failure(new InvalidSyntaxError(tok.pos_start, tok.pos_end, "Expected int or float"));
+        return this.power();
     }
 
     public Object term() {

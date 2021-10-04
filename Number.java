@@ -53,6 +53,17 @@ public class Number {
         return null;
     }
 
+    public Object powed_by(Object other) {
+        if (other instanceof Number) {
+            if (((Number)other).value == 0.0) {
+                return new RunTimeResult(null, new RunTimeError(((Number)other).pos_start, ((Number)other).pos_end, "Division by zero", this.context));
+            } else {
+                return new RunTimeResult((Object)new Number(Math.pow(this.value, ((Number)other).value)).set_context(this.context), null);
+            }
+        }
+        return null;
+    }
+
     public String toString()
     {
         return String.valueOf(this.value);
