@@ -27,7 +27,7 @@ public class Error {
         return result;
     }
 
-    private String string_with_arrows(String text, Position pos_start, Position pos_end) {
+    public String string_with_arrows(String text, Position pos_start, Position pos_end) {
         String result = "";
 
         // Calculate indices
@@ -45,7 +45,7 @@ public class Error {
             
             // Append to result
             result += line + '\n';
-            result += (" ".repeat(col_start)) + ("^".repeat((col_end - col_start)));
+            result += (" ".repeat((col_start == 0) ? col_start : (col_start-1))) + ("^".repeat((col_end - col_start)));
 
             // Re-calculate indices
             idx_start = idx_end;

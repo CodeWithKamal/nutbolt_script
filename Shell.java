@@ -23,10 +23,17 @@ public class Shell {
                 if(ast.error != null) {
                     System.out.println(ast.error.toString());
                 } else {
-                    System.out.println(ast.node.toString());
+                    Interpreter interpreter = new Interpreter();
+                    Context context = new Context("<program>");
+                    RunTimeResult result = (RunTimeResult)interpreter.visit(ast.node, context);
+
+                    if (result.error != null) {
+                        System.out.println(result.error.toString());
+                    } else {
+                        System.out.println(result.value.toString());
+                    }
                 }
             }
         }
-        
     }
 }

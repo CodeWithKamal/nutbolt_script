@@ -1,4 +1,5 @@
 public class InvalidSyntaxError extends Error {
+    
     public Position pos_start;
     public Position pos_end;
     public String details;
