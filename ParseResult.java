@@ -1,6 +1,7 @@
 public class ParseResult {
     public Error error;
     public Object node;
+    public int advance_count = 0;
 
     public ParseResult() {
         // this.error = null;
@@ -8,14 +9,16 @@ public class ParseResult {
     }
 
     public Object register(Object res) {
-        if (res instanceof ParseResult) {
-            if (((ParseResult)res).error != null) {
-                this.error = ((ParseResult)res).error;
-            }
-            return ((ParseResult)res).node;
+        this.advance_count += ((ParseResult)res).advance_count;
+        if (((ParseResult)res).error != null) {
+            this.error = ((ParseResult)res).error;
         }
+        return ((ParseResult)res).node;
+    }
 
-        return res;
+    public void register_advancement() {
+        this.advance_count += 1;
+
     }
 
     public ParseResult success(Object node) {
@@ -24,7 +27,9 @@ public class ParseResult {
     }
 
     public ParseResult failure(Error error) {
-        this.error = error;
+        if (this.error == null || this.advance_count == 0) {
+            this.error = error;
+        }
         return this;
     }
 

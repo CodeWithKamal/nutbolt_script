@@ -8,17 +8,48 @@ public class Interpreter {
             return visit_BinOpNode(node, context);
         } else if (method_name.equals("UnaryOpNode")) {
             return visit_UnaryOpNode(node, context);
+        } else if (method_name.equals("VarAccessNode")) {
+            return visit_VarAccessNode(node, context);
+        } else if (method_name.equals("VarAssignNode")) {
+            return visit_VarAssignNode(node, context);
         } else {
             return no_visit_method(node, context);
         }
     }
 
     public Object no_visit_method(Object node, Context context) {
+        System.out.println("No visit_" + node.getClass().getName() + " method defined");
         return (Object)"No visit_" + node.getClass().getName() + " method defined";
     }
 
     public Object visit_NumberNode(Object node, Context context) {
         return (Object) new RunTimeResult().success(new Number(Double.parseDouble(((NumberNode)node).tok.value)).set_context(context).set_pos(((NumberNode)node).tok.pos_start, ((NumberNode)node).tok.pos_end));
+    }
+
+    public Object visit_VarAccessNode(Object node, Context context) {
+        RunTimeResult res = new RunTimeResult();
+        String var_name = ((VarAccessNode)node).var_name_tok.value;
+        Object value = context.symbol_table.get(var_name);
+
+        if (value == null) {
+            res.failure(new RunTimeError(((VarAccessNode)node).pos_start, ((VarAccessNode)node).pos_end, var_name+" is not defined", context));
+        }
+
+        value = ((Number)value).copy().set_pos(((VarAccessNode)node).pos_start, ((VarAccessNode)node).pos_end);
+        return res.success(value);
+    }
+
+    public Object visit_VarAssignNode(Object node, Context context) {
+        RunTimeResult res = new RunTimeResult();
+        String var_name = ((VarAssignNode)node).var_name_tok.value;
+        Object value = res.register(this.visit(((VarAssignNode)node).value_node, context));
+
+        if (res.error != null) {
+            return res;
+        }
+
+        context.symbol_table.set(var_name, value);
+        return res.success(value);
     }
 
     public Object visit_BinOpNode(Object node, Context context) {
@@ -50,7 +81,10 @@ public class Interpreter {
         }
         
         if (node.getClass().getName().equals("NumberNode")) {
-            result = ((RunTimeResult)result).value;
+            if (result.getClass().getName().equals("RunTimeResult")) {
+                result = ((RunTimeResult)result).value;
+            }
+            
             return res.success((Object)((Number)result).set_pos(((NumberNode)node).tok.pos_start, ((NumberNode)node).tok.pos_end));
         } else {
             result = ((RunTimeResult)result).value;
@@ -60,7 +94,7 @@ public class Interpreter {
     
     public Object visit_UnaryOpNode(Object node, Context context) {
         RunTimeResult res = new RunTimeResult();
-        Object number = res.register((Number)this.visit(((UnaryOpNode)node).node, context));
+        Object number = res.register(this.visit(((UnaryOpNode)node).node, context));
 
         if (res.error != null) {
             return res;
@@ -70,16 +104,21 @@ public class Interpreter {
             number = ((Number)number).multed_by(new Number(-1));
         }
 
-        if (((RunTimeResult)number).error != null) {
-            return res.failure(((RunTimeResult)number).error);
+        if (number.getClass().getName().equals("RunTimeResult")) {
+            if (((RunTimeResult)number).error != null) {
+                return res.failure(((RunTimeResult)number).error);
+            }
         }
-        
 
         if (node.getClass().getName().equals("NumberNode")) {
-            number = ((RunTimeResult)number).value;
+            if (number.getClass().getName().equals("RunTimeResult")) {
+                number = ((RunTimeResult)number).value;
+            }
             return res.success((Object)((Number)number).set_pos(((NumberNode)node).tok.pos_start, ((NumberNode)node).tok.pos_end));
         } else {
-            number = ((RunTimeResult)number).value;
+            if (number.getClass().getName().equals("RunTimeResult")) {
+                number = ((RunTimeResult)number).value;
+            }
             return res.success((Object)((Number)number).set_pos(((UnaryOpNode)node).op_tok.pos_start, ((UnaryOpNode)node).op_tok.pos_end));
         }
     }

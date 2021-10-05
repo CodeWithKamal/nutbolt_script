@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * 
  * TOKENS
@@ -8,6 +10,8 @@ public class Token {
     public String value;
     public Position pos_start = null;
     public Position pos_end = null ;
+
+    public static final List<String> KEYWORDS = List.of("let");
 
     public Token(Type type, String value, Position pos_start, Position pos_end) {
        this.type = type;
@@ -22,6 +26,10 @@ public class Token {
        if (pos_end != null) {
            this.pos_end = pos_end;
        }
+    }
+
+    public Boolean matches(Type type, String value) {
+        return ((this.type.equals(type)) && (this.value.equals(value)));
     }
 
     public String toString()

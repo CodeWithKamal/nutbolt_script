@@ -2,6 +2,7 @@ public class Context {
     public String display_name;
     public Context parent;
     public Position parent_entry_pos;
+    public SymbolTable symbol_table;
     
     public Context(String display_name) {
         this.display_name = display_name;

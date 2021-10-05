@@ -64,6 +64,13 @@ public class Number {
         return null;
     }
 
+    public Number copy() {
+        Number copy = new Number(this.value);
+        copy.set_pos(this.pos_start, this.pos_end);
+        copy.set_context(this.context);
+        return copy;
+    }
+
     public String toString()
     {
         return String.valueOf(this.value);

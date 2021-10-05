@@ -49,6 +49,9 @@ public class Lexer {
             } else if(this.current_char == '^') {
                 tokens.add(new Token(Type.POW, null, this.pos, null));
                 this.advance();
+            } else if(this.current_char == '=') {
+                tokens.add(new Token(Type.EQ, null, this.pos, null));
+                this.advance();
             } else if(this.current_char == '(') {
                 tokens.add(new Token(Type.LPAREN, null, this.pos, null));
                 this.advance();
@@ -57,6 +60,9 @@ public class Lexer {
                 this.advance();
             } else if(Character.isDigit(this.current_char)) {
                 tokens.add(this.make_number());
+                this.advance();
+            } else if(Character.isLetterOrDigit(this.current_char)) {
+                tokens.add(this.make_identifier());
                 this.advance();
             } else {
                 Position pos_start = this.pos.copy();
@@ -95,4 +101,23 @@ public class Lexer {
             return new Token(Type.FLOAT, num_str, pos_start, this.pos);
         }
     }
+
+    public Token make_identifier() {
+        String id_str = "";
+        Position pos_start = this.pos.copy();
+
+        while ((this.current_char != Character.MIN_VALUE) && ((Character.isLetterOrDigit(this.current_char)) || (this.current_char == '_'))) {
+            id_str += this.current_char;
+            this.advance();
+        }
+
+        Type tok_type;
+        if (Token.KEYWORDS.contains(id_str)) {
+            tok_type = Type.KEYWORD;
+        } else {
+            tok_type = Type.IDENTIFIER;
+        }
+        return new Token(tok_type, id_str, pos_start, this.pos);
+    }
+
 }

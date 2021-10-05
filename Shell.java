@@ -3,6 +3,8 @@ import java.util.Scanner;
 public class Shell {
     public static void main(String[] args) {
         Scanner myObj = new Scanner(System.in);
+        SymbolTable global_symbol_table = new SymbolTable();
+        global_symbol_table.set("null", new Number(0));
         while (true) {
             System.out.print("basic > ");
             String text = myObj.nextLine();
@@ -17,14 +19,18 @@ public class Shell {
             if(lexResult.error != null) {
                 System.out.println(lexResult.error.toString());
             } else {
+                // System.out.println(lexResult.tokens.toString());
                 Parser parser = new Parser(lexResult.tokens);
                 ParseResult ast = parser.parse();
 
                 if(ast.error != null) {
                     System.out.println(ast.error.toString());
                 } else {
+                    // System.out.println(ast.node.toString());
+                    
                     Interpreter interpreter = new Interpreter();
                     Context context = new Context("<program>");
+                    context.symbol_table = global_symbol_table;
                     RunTimeResult result = (RunTimeResult)interpreter.visit(ast.node, context);
 
                     if (result.error != null) {
