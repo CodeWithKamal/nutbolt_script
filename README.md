@@ -4,6 +4,7 @@ This is an interpreting programming language, a BASIC-like programming language 
 > **Note**: *This project is still under development, & it might contain lot of bugs!*
 
 ### Features of this programming language:
+ - [x] Running nutbolt script (.nbscript)
  - [x] Shell Interpreter 
  - [x] Arithmetic operators ( ' + ', ' - ', ' * ', ' / ', ' ^ ' )
  - [x] Variables support for 'Int' & 'Float' DataTypes.
@@ -17,7 +18,6 @@ This is an interpreting programming language, a BASIC-like programming language 
  - [ ] Multi-line statements
  - [ ] Return, Continue, Break - Keywords
  - [ ] Comments
- - [ ] Running nutbolt script (.nbscript)
 
 ## Author - Kamal Panara
 
