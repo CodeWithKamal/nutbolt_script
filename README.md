@@ -1,6 +1,6 @@
 # Nutbolt Script
 
-This is an interpreter, a BASIC-like programming language written in Java 11.0.12 2021-07-20 LTS.
+This is an interpreting programming language, a BASIC-like programming language written in Java 11.0.12 2021-07-20 LTS.
 > **Note**: *This project is still under development, & it might contain lot of bugs!*
 
 ### Features of this programming language:
