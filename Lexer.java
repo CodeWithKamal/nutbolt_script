@@ -111,6 +111,8 @@ public class Lexer {
             this.advance();
         }
 
+        this.pos.idx--;
+        
         Type tok_type;
         if (Token.KEYWORDS.contains(id_str)) {
             tok_type = Type.KEYWORD;

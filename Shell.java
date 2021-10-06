@@ -6,11 +6,16 @@ public class Shell {
         SymbolTable global_symbol_table = new SymbolTable();
         global_symbol_table.set("null", new Number(0));
         while (true) {
-            System.out.print("basic > ");
+            System.out.print("nutbolt script >>> ");
             String text = myObj.nextLine();
             if (text.equals("exit()")) {
                 myObj.close();
                 break;
+            }
+
+            if (text.equals("sym()")) {
+                System.out.println("Global: " + global_symbol_table.symbols);
+                text = "null";
             }
 
             Lexer lexer = new Lexer("<stdin>", text);

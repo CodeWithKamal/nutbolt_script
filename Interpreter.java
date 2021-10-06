@@ -32,7 +32,7 @@ public class Interpreter {
         Object value = context.symbol_table.get(var_name);
 
         if (value == null) {
-            res.failure(new RunTimeError(((VarAccessNode)node).pos_start, ((VarAccessNode)node).pos_end, var_name+" is not defined", context));
+            return res.failure(new RunTimeError(((VarAccessNode)node).pos_start, ((VarAccessNode)node).pos_end, var_name+" is not defined", context));
         }
 
         value = ((Number)value).copy().set_pos(((VarAccessNode)node).pos_start, ((VarAccessNode)node).pos_end);
