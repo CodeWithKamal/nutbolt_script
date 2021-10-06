@@ -6,7 +6,7 @@ This is an interpreter, a BASIC-like programming language written in Java 11.0.1
 ### Features of this programming language:
  - [x] Shell Interpreter 
  - [x] Arithmetic operators ( ' + ', ' - ', ' * ', ' / ', ' ^ ' )
- - [x] Variables support of 'Int' & 'Float' DataTypes.
+ - [x] Variables support for 'Int' & 'Float' DataTypes.
  - [ ] Comparison and Logical operators ( ' == ', ' >= ', ' <= ', ' != ', ' ! ')
  - [ ] If statement
  - [ ] For & While loop
