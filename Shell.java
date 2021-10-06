@@ -6,7 +6,7 @@ public class Shell {
         SymbolTable global_symbol_table = new SymbolTable();
         global_symbol_table.set("null", new Number(0));
         while (true) {
-            System.out.print("nutbolt script >>> ");
+            System.out.print("Nutbolt-Script >>> ");
             String text = myObj.nextLine();
             if (text.equals("exit()")) {
                 myObj.close();
