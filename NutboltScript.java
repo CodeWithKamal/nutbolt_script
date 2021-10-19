@@ -6,6 +6,8 @@ public class NutboltScript {
     public static void main(String[] args) {
         SymbolTable global_symbol_table = new SymbolTable();
         global_symbol_table.set("null", new Number(0));
+        global_symbol_table.set("true", new Number(1.0));
+        global_symbol_table.set("false", new Number(0.0));
         if (args.length > 0) {
             try {
                 File myObj = new File(args[0]+".nbscript");
@@ -23,7 +25,7 @@ public class NutboltScript {
                     text = "null";
                 }
     
-                Lexer lexer = new Lexer("<stdin>", text);
+                Lexer lexer = new Lexer(args[0]+".nbscript", text);
                 LexResult lexResult = lexer.make_tokens();
     
                 if (lexResult.error != null) {
@@ -53,7 +55,7 @@ public class NutboltScript {
                 }
                 myReader.close();
               } catch (FileNotFoundException e) {
-                System.out.println("File Not Found! or Invalid Nutbolt Script!");
+                System.out.println("Nutbolt Script Not Found!");
               }
         } else {
             Scanner myObj = new Scanner(System.in);
@@ -99,12 +101,7 @@ public class NutboltScript {
                         }
                     }
                 }
-
             }
-        
         }
-       
-    
-    
     }
 }

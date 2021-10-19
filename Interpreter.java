@@ -74,6 +74,22 @@ public class Interpreter {
             result = left.dived_by(right);
         } else if(((BinOpNode)node).op_tok.type == Type.POW) {
             result = left.powed_by(right);
+        } else if(((BinOpNode)node).op_tok.type == Type.EE) {
+            result = left.get_comparison_eq(right);
+        } else if(((BinOpNode)node).op_tok.type == Type.NE) {
+            result = left.get_comparison_ne(right);
+        } else if(((BinOpNode)node).op_tok.type == Type.LT) {
+            result = left.get_comparison_lt(right);
+        } else if(((BinOpNode)node).op_tok.type == Type.GT) {
+            result = left.get_comparison_gt(right);
+        } else if(((BinOpNode)node).op_tok.type == Type.LTE) {
+            result = left.get_comparison_lte(right);
+        } else if(((BinOpNode)node).op_tok.type == Type.GTE) {
+            result = left.get_comparison_gte(right);
+        } else if(((BinOpNode)node).op_tok.matches(Type.KEYWORD, "and")) {
+            result = left.anded_by(right);
+        } else if(((BinOpNode)node).op_tok.matches(Type.KEYWORD, "or")) {
+            result = left.ored_by(right);
         }
         
         if (((RunTimeResult)result).error != null) {
@@ -102,6 +118,8 @@ public class Interpreter {
 
         if (((UnaryOpNode)node).op_tok.type == Type.MINUS) {
             number = ((Number)number).multed_by(new Number(-1));
+        } else if (((UnaryOpNode)node).op_tok.matches(Type.KEYWORD, "not")) {
+            number = ((Number)number).notted();
         }
 
         if (number.getClass().getName().equals("RunTimeResult")) {

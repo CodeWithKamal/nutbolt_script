@@ -64,6 +64,66 @@ public class Number {
         return null;
     }
 
+    public Object get_comparison_eq(Object other) {
+        if (other instanceof Number) {
+            return new RunTimeResult((Object)new Number((this.value == ((Number)other).value) ? 1.0 : 0.0).set_context(this.context), null);
+        }
+        return null;
+    }
+    
+    public Object get_comparison_ne(Object other) {
+        if (other instanceof Number) {
+            return new RunTimeResult((Object)new Number((this.value != ((Number)other).value) ? 1.0 : 0.0).set_context(this.context), null);
+        }
+        return null;
+    }
+
+    public Object get_comparison_lt(Object other) {
+        if (other instanceof Number) {
+            return new RunTimeResult((Object)new Number((this.value < ((Number)other).value) ? 1.0 : 0.0).set_context(this.context), null);
+        }
+        return null;
+    }
+
+    public Object get_comparison_gt(Object other) {
+        if (other instanceof Number) {
+            return new RunTimeResult((Object)new Number((this.value > ((Number)other).value) ? 1.0 : 0.0).set_context(this.context), null);
+        }
+        return null;
+    }
+
+    public Object get_comparison_lte(Object other) {
+        if (other instanceof Number) {
+            return new RunTimeResult((Object)new Number((this.value <= ((Number)other).value) ? 1.0 : 0.0).set_context(this.context), null);
+        }
+        return null;
+    }
+
+    public Object get_comparison_gte(Object other) {
+        if (other instanceof Number) {
+            return new RunTimeResult((Object)new Number((this.value >= ((Number)other).value) ? 1.0 : 0.0).set_context(this.context), null);
+        }
+        return null;
+    }
+
+    public Object anded_by(Object other) {
+        if (other instanceof Number) {
+            return new RunTimeResult((Object)new Number(((this.value == 1.0 ? true : false) && (((Number)other).value == 1.0 ? true : false)) ? 1.0 : 0.0).set_context(this.context), null);
+        }
+        return null;
+    }
+    
+    public Object ored_by(Object other) {
+        if (other instanceof Number) {
+            return new RunTimeResult((Object)new Number(((this.value == 1.0 ? true : false) || (((Number)other).value == 1.0 ? true : false)) ? 1.0 : 0.0).set_context(this.context), null);
+        }
+        return null;
+    }
+
+    public Object notted() {
+        return new RunTimeResult((Object)new Number((this.value == 0.0) ? 1.0 : 0.0).set_context(this.context), null);
+    }
+
     public Number copy() {
         Number copy = new Number(this.value);
         copy.set_pos(this.pos_start, this.pos_end);

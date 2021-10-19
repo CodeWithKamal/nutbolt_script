@@ -57,7 +57,8 @@ public class Parser {
             }
         }
 
-        return res.failure(new InvalidSyntaxError(tok.pos_start, tok.pos_end, "Expected int, float, identifier, '+', '-', or '('"));
+        return res.failure(new InvalidSyntaxError(tok.pos_start, tok.pos_end,
+                "Expected int, float, identifier, '+', '-', or '('"));
     }
 
     public Object power() {
@@ -115,6 +116,68 @@ public class Parser {
         return res.success(left);
     }
 
+    public Object arith_expr() {
+        ParseResult res = new ParseResult();
+        Object left = res.register(this.term());
+        if (res.error != null)
+            return res;
+
+        while (this.current_tok.type == Type.PLUS || this.current_tok.type == Type.MINUS) {
+            Token op_tok = this.current_tok;
+            res.register_advancement();
+            this.advance();
+            Object right = res.register(this.term());
+            if (res.error != null)
+                return res;
+            left = new BinOpNode(left, op_tok, right);
+        }
+
+        return res.success(left);
+    }
+
+    public Object comp_expr() {
+        ParseResult res = new ParseResult();
+
+        if (this.current_tok.matches(Type.KEYWORD, "not")) {
+            Token op_tok = this.current_tok;
+            res.register_advancement();
+            this.advance();
+
+            Object node = res.register(this.comp_expr());
+
+            if (res.error != null) {
+                return res;
+            }
+
+            return res.success(new UnaryOpNode(op_tok, node));
+        }
+
+        Object left = res.register(this.arith_expr());
+        if (res.error != null)
+            return res;
+
+        while (this.current_tok.type == Type.EE || this.current_tok.type == Type.NE || this.current_tok.type == Type.LT
+                || this.current_tok.type == Type.GT || this.current_tok.type == Type.LTE
+                || this.current_tok.type == Type.GTE) {
+            Token op_tok = this.current_tok;
+            res.register_advancement();
+            this.advance();
+            Object right = res.register(this.factor());
+            if (res.error != null)
+                return res;
+            left = new BinOpNode(left, op_tok, right);
+        }
+
+        Object node = res.register(res.success(left));
+
+        if (res.error != null) {
+            return res.failure(new InvalidSyntaxError(this.current_tok.pos_start, this.current_tok.pos_end,
+                    "Expected int, float, identifier, '+', '-', '(', 'not'"));
+        }
+
+        return res.success(node);
+    }
+
     public Object expr() {
         ParseResult res = new ParseResult();
         if (this.current_tok.matches(Type.KEYWORD, "let")) {
@@ -144,9 +207,10 @@ public class Parser {
             return res.success(new VarAssignNode(var_name, expr));
         }
 
-        Object left = res.register(this.term());
+        Object left = res.register(this.comp_expr());
 
-        while (this.current_tok.type == Type.PLUS || this.current_tok.type == Type.MINUS) {
+        while (this.current_tok.matches(Type.KEYWORD, "and")
+                || this.current_tok.matches(Type.KEYWORD, "or")) {
             Token op_tok = this.current_tok;
             res.register_advancement();
             this.advance();
@@ -159,7 +223,8 @@ public class Parser {
         Object node = res.register(res.success(left));
 
         if (res.error != null) {
-            return res.failure(new InvalidSyntaxError(this.current_tok.pos_start, this.current_tok.pos_end, "Expected 'let', int, float, identifier, '+', '-' or '('"));
+            return res.failure(new InvalidSyntaxError(this.current_tok.pos_start, this.current_tok.pos_end,
+                    "Expected 'let', int, float, identifier, '+', '-' or '('"));
         }
 
         return res.success(node);

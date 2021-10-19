@@ -1,8 +1,10 @@
 let a = 5
 let b = 2
+s
 a+b
 a^b
 a*b
 a/b
 a-b
-exit()
+
+# this is the comment

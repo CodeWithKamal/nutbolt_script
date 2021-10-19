@@ -1,0 +1,269 @@
+name                   = nbscript
+file_extensions []     = nbscript;
+
+################################################################
+## Constants
+################################################################
+
+################################################################
+## Styles
+################################################################
+
+styles [] {
+
+.comment : style {
+   color                 = grey
+   italic                = true
+   ace_scope             = comment
+   textmate_scope        = comment
+   pygments_scope        = Comment
+}
+
+.keyword : style {
+   color     = light_blue
+   ace_scope             = keyword
+   textmate_scope        = keyword
+   pygments_scope        = Keyword
+}
+
+.numeric : style {
+   color                 = light_green
+   ace_scope             = constant.numeric
+   textmate_scope        = constant.numeric
+   pygments_scope        = Number
+}
+
+.punctuation : style {
+   color     = red_2
+   ace_scope             = punctuation
+   textmate_scope        = punctuation
+   pygments_scope        = Punctuation
+}
+
+.text : style {
+   color                 = white
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.string : style {
+   color                 = gold
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+
+}
+
+#################################################
+## Parse contexts
+#################################################
+
+contexts [] {
+
+##############################################
+## Main Context - Entry point context
+##############################################
+
+main : context {
+
+   : pattern {
+      regex          \= (let)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (if)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (to)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (len)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (append)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (print)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (then)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (end)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (while)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (for)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (not)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (and)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (or)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (break)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (continue)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (fun)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (return)
+      styles []       = .keyword;
+   }
+   
+   : pattern {
+      regex          \= (\b[a-zA-Z][a-zA-Z0-9]*)
+      styles []       = .text;
+   }
+   
+   : include "numeric" ;
+   
+   : pattern {
+      regex          \= (\>)
+      styles []       = .punctuation;
+   }
+   
+   : pattern {
+      regex          \= (\<)
+      styles []       = .punctuation;
+   }
+   
+   : pattern {
+      regex          \= (\!)
+      styles []       = .punctuation;
+   }
+      
+   : pattern {
+      regex          \= (\^)
+      styles []       = .punctuation;
+   }
+   
+   : pattern {
+      regex          \= (\=)
+      styles []       = .punctuation;
+   }
+   
+   : pattern {
+      regex          \= (\+)
+      styles []       = .punctuation;
+   }
+   
+   : pattern {
+      regex          \= (\-)
+      styles []       = .punctuation;
+   }
+   
+   : pattern {
+      regex          \= (\*)
+      styles []       = .punctuation;
+   }
+   
+   : pattern {
+      regex          \= (\/)
+      styles []       = .punctuation;
+   }
+   
+   : inline_push {
+      regex          \= (\")
+      styles []       = .string;
+      default_style   = .string
+      : pop {
+         regex       \= (\")
+         styles []    = .string;
+      }
+   }
+   
+   
+   : inline_push {
+      regex          \= (\[)
+      styles []       = .punctuation;
+      : pop {  
+         regex       \= (\])
+         styles []    = .punctuation;
+      }
+      : include "main" ;
+   }
+   
+   
+   : inline_push {
+      regex          \= (\()
+      styles []       = .punctuation;
+      : pop {
+         regex       \= (\))
+         styles []    = .punctuation;
+      }
+      : include "numeric" ;
+      : pattern {
+         regex          \= (\b[a-zA-Z][a-zA-Z0-9]*)
+         styles []       = .string;
+      }
+      : pattern {
+         regex       \= (.)
+         styles []    = .punctuation;
+      }
+   }
+   
+   : pattern {
+      regex          \= (#.*)
+      styles []       = .comment;
+   }
+}
+
+#################################################
+## End of Contexts
+#################################################
+
+###########################################
+## Numeric Context
+###########################################
+
+numeric : context {
+   : pattern {
+      regex          \= (\d+(?:\.\d+)?)
+      styles []       = .numeric;
+   }
+}
+}
