@@ -8,7 +8,7 @@ This is an interpreting programming language, a BASIC-like programming language 
  - [x] Shell Interpreter 
  - [x] Arithmetic operators ( ' + ', ' - ', ' * ', ' / ', ' ^ ' )
  - [x] Variables support for 'Int' & 'Float' DataTypes.
- - [ ] Comparison and Logical operators ( ' == ', ' >= ', ' <= ', ' != ', ' ! ')
+ - [x] Comparison and Logical operators ( ' == ', ' >= ', ' <= ', ' != ', ' ! ')
  - [ ] If statement
  - [ ] For & While loop
  - [ ] Functions
