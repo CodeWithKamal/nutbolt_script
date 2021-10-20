@@ -1,2 +1,3 @@
 *.class
 Manifest.txt
+.DS_Store
