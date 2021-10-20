@@ -11,7 +11,7 @@ public class Token {
     public Position pos_start = null;
     public Position pos_end = null ;
 
-    public static final List<String> KEYWORDS = List.of("let", "and", "or", "not");
+    public static final List<String> KEYWORDS = List.of("let", "and", "or", "not", "if", "then", "elif", "else");
 
     public Token(Type type, String value, Position pos_start, Position pos_end) {
        this.type = type;

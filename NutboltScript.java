@@ -97,7 +97,9 @@ public class NutboltScript {
                         if (result.error != null) {
                             System.out.println(result.error.toString());
                         } else {
-                            System.out.println(result.value.toString());
+                            if (result.value != null) {
+                                System.out.println(result.value.toString());
+                            }
                         }
                     }
                 }

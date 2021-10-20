@@ -21,7 +21,8 @@ public class BinOpNode {
             this.pos_start = (Position) ps.get(this.left_node);
             this.pos_end = (Position) pe.get(this.right_node);
         } catch(Exception e){
-            System.err.println(e);
+            System.err.print("Error<BinOpNode>: ");
+            System.err.print(e);
         }
     }
 

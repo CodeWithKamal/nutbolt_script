@@ -131,6 +131,10 @@ public class Number {
         return copy;
     }
 
+    public Boolean is_true() {
+        return this.value != 0.0;
+    }
+
     public String toString()
     {
         return String.valueOf(this.value);

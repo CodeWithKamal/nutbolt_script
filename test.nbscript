@@ -1,18 +1,17 @@
 let a = 5
 let b = 2
-
 a+b
 a^b
 a*b
 a/b
 a-b
-
 a==b
 a<=b
 a!=b
 not(a>=b)
 a<b
 a>b
-
 (2 == 2) and (5 == 5)
 (2 == 5) or (5 == 5)
+
+if 5 == 5 then 1 else 0

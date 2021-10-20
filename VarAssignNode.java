@@ -19,6 +19,8 @@ public class VarAssignNode {
             this.pos_end = ((VarAssignNode)this.value_node).pos_end;
         } else if (this.value_node.getClass().getName().equals("VarAccessNode")) {
             this.pos_end = ((VarAccessNode)this.value_node).pos_end;
+        } else if (this.value_node.getClass().getName().equals("IfNode")) {
+            this.pos_end = ((IfNode)this.value_node).pos_end;
         } else {
             this.pos_end = ((NumberNode)this.value_node).pos_end;
         }

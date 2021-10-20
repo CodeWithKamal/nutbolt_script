@@ -9,7 +9,7 @@ This is an interpreting programming language, a BASIC-like programming language 
  - [x] Arithmetic operators ( ' + ', ' - ', ' * ', ' / ', ' ^ ' )
  - [x] Variables support for 'Int' & 'Float' DataTypes.
  - [x] Comparison and Logical operators ( ' == ', ' >= ', ' <= ', ' != ', ' ! ')
- - [ ] If statement
+ - [x] If statement
  - [ ] For & While loop
  - [ ] Functions
  - [ ] Strings

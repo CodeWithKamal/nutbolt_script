@@ -16,12 +16,13 @@ public class UnaryOpNode {
             Field pe = this.node.getClass().getDeclaredField("pos_end");
             pe.setAccessible(true);
             this.pos_end = (Position) pe.get(this.node);
-        } catch(Exception e){
-            System.err.println(e);
+        } catch (Exception e) {
+            System.err.print("Error<UnaryOpNode>: ");
+            System.err.print(e);
         }
     }
 
     public String toString() {
-        return ("("+ this.op_tok.toString() + ", " + this.node.toString() + ")");
+        return ("(" + this.op_tok.toString() + ", " + this.node.toString() + ")");
     }
 }

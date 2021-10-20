@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
@@ -29,6 +30,73 @@ public class Parser {
         return res;
     }
 
+    public Object if_expr() {
+        ParseResult res = new ParseResult();
+        List<IfStatement> cases = new ArrayList<IfStatement>();
+        Object else_case = null;
+
+        if (!(this.current_tok.matches(Type.KEYWORD, "if")))
+            return res.failure(
+                    new InvalidSyntaxError(this.current_tok.pos_start, this.current_tok.pos_end, "Expected 'if'"));
+
+        res.register_advancement();
+        this.advance();
+
+        Object condition = res.register(this.expr());
+        if (res.error != null)
+            return res;
+
+        if (!(this.current_tok.matches(Type.KEYWORD, "then")))
+            return res.failure(
+                    new InvalidSyntaxError(this.current_tok.pos_start, this.current_tok.pos_end, "Expected 'then'"));
+
+        res.register_advancement();
+        this.advance();
+
+        Object expr = res.register(this.expr());
+
+        if (res.error != null)
+            return res;
+
+        cases.add(new IfStatement(condition, expr));
+
+        while (this.current_tok.matches(Type.KEYWORD, "elif")) {
+            res.register_advancement();
+            this.advance();
+
+            condition = res.register(this.expr());
+            if (res.error != null)
+                return res;
+
+            if (!(this.current_tok.matches(Type.KEYWORD, "then")))
+                return res.failure(new InvalidSyntaxError(this.current_tok.pos_start, this.current_tok.pos_end,
+                        "Expected 'then'"));
+
+            res.register_advancement();
+            this.advance();
+
+            expr = res.register(this.expr());
+
+            if (res.error != null)
+                return res;
+
+            cases.add(new IfStatement(condition, expr));
+
+        }
+        if (this.current_tok.matches(Type.KEYWORD, "else")) {
+            res.register_advancement();
+            this.advance();
+
+            expr = res.register(this.expr());
+            if (res.error != null)
+                return res;
+
+            else_case = expr;
+        }
+
+        return res.success(new IfNode(cases, else_case));
+    }
+
     public Object atom() {
         ParseResult res = new ParseResult();
         Token tok = this.current_tok;
@@ -55,6 +123,12 @@ public class Parser {
                 return res.failure(
                         new InvalidSyntaxError(this.current_tok.pos_start, this.current_tok.pos_end, "Expected ')'"));
             }
+        } else if (tok.matches(Type.KEYWORD, "if")) {
+            Object if_expr = res.register(this.if_expr());
+            if (res.error != null) {
+                return res;
+            }
+            return res.success(if_expr);
         }
 
         return res.failure(new InvalidSyntaxError(tok.pos_start, tok.pos_end,
@@ -209,8 +283,7 @@ public class Parser {
 
         Object left = res.register(this.comp_expr());
 
-        while (this.current_tok.matches(Type.KEYWORD, "and")
-                || this.current_tok.matches(Type.KEYWORD, "or")) {
+        while (this.current_tok.matches(Type.KEYWORD, "and") || this.current_tok.matches(Type.KEYWORD, "or")) {
             Token op_tok = this.current_tok;
             res.register_advancement();
             this.advance();

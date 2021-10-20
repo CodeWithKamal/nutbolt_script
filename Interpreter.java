@@ -12,6 +12,8 @@ public class Interpreter {
             return visit_VarAccessNode(node, context);
         } else if (method_name.equals("VarAssignNode")) {
             return visit_VarAssignNode(node, context);
+        } else if (method_name.equals("IfNode")) {
+            return visit_IfNode(node, context);
         } else {
             return no_visit_method(node, context);
         }
@@ -19,30 +21,32 @@ public class Interpreter {
 
     public Object no_visit_method(Object node, Context context) {
         System.out.println("No visit_" + node.getClass().getName() + " method defined");
-        return (Object)"No visit_" + node.getClass().getName() + " method defined";
+        return (Object) "No visit_" + node.getClass().getName() + " method defined";
     }
 
     public Object visit_NumberNode(Object node, Context context) {
-        return (Object) new RunTimeResult().success(new Number(Double.parseDouble(((NumberNode)node).tok.value)).set_context(context).set_pos(((NumberNode)node).tok.pos_start, ((NumberNode)node).tok.pos_end));
+        return (Object) new RunTimeResult().success(new Number(Double.parseDouble(((NumberNode) node).tok.value))
+                .set_context(context).set_pos(((NumberNode) node).tok.pos_start, ((NumberNode) node).tok.pos_end));
     }
 
     public Object visit_VarAccessNode(Object node, Context context) {
         RunTimeResult res = new RunTimeResult();
-        String var_name = ((VarAccessNode)node).var_name_tok.value;
+        String var_name = ((VarAccessNode) node).var_name_tok.value;
         Object value = context.symbol_table.get(var_name);
 
         if (value == null) {
-            return res.failure(new RunTimeError(((VarAccessNode)node).pos_start, ((VarAccessNode)node).pos_end, var_name+" is not defined", context));
+            return res.failure(new RunTimeError(((VarAccessNode) node).pos_start, ((VarAccessNode) node).pos_end,
+                    var_name + " is not defined", context));
         }
 
-        value = ((Number)value).copy().set_pos(((VarAccessNode)node).pos_start, ((VarAccessNode)node).pos_end);
+        value = ((Number) value).copy().set_pos(((VarAccessNode) node).pos_start, ((VarAccessNode) node).pos_end);
         return res.success(value);
     }
 
     public Object visit_VarAssignNode(Object node, Context context) {
         RunTimeResult res = new RunTimeResult();
-        String var_name = ((VarAssignNode)node).var_name_tok.value;
-        Object value = res.register(this.visit(((VarAssignNode)node).value_node, context));
+        String var_name = ((VarAssignNode) node).var_name_tok.value;
+        Object value = res.register(this.visit(((VarAssignNode) node).value_node, context));
 
         if (res.error != null) {
             return res;
@@ -54,91 +58,120 @@ public class Interpreter {
 
     public Object visit_BinOpNode(Object node, Context context) {
         RunTimeResult res = new RunTimeResult();
-        Number left = (Number) res.register(this.visit(((BinOpNode)node).left_node, context));
+        Number left = (Number) res.register(this.visit(((BinOpNode) node).left_node, context));
         if (res.error != null) {
             return res;
         }
-        Number right = (Number) res.register(this.visit(((BinOpNode)node).right_node, context));
+        Number right = (Number) res.register(this.visit(((BinOpNode) node).right_node, context));
         if (res.error != null) {
             return res;
         }
         Object result = null;
 
-        if(((BinOpNode)node).op_tok.type == Type.PLUS) {
+        if (((BinOpNode) node).op_tok.type == Type.PLUS) {
             result = left.added_to(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.MINUS) {
+        } else if (((BinOpNode) node).op_tok.type == Type.MINUS) {
             result = left.subbed_by(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.MUL) {
+        } else if (((BinOpNode) node).op_tok.type == Type.MUL) {
             result = left.multed_by(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.DIV) {
+        } else if (((BinOpNode) node).op_tok.type == Type.DIV) {
             result = left.dived_by(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.POW) {
+        } else if (((BinOpNode) node).op_tok.type == Type.POW) {
             result = left.powed_by(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.EE) {
+        } else if (((BinOpNode) node).op_tok.type == Type.EE) {
             result = left.get_comparison_eq(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.NE) {
+        } else if (((BinOpNode) node).op_tok.type == Type.NE) {
             result = left.get_comparison_ne(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.LT) {
+        } else if (((BinOpNode) node).op_tok.type == Type.LT) {
             result = left.get_comparison_lt(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.GT) {
+        } else if (((BinOpNode) node).op_tok.type == Type.GT) {
             result = left.get_comparison_gt(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.LTE) {
+        } else if (((BinOpNode) node).op_tok.type == Type.LTE) {
             result = left.get_comparison_lte(right);
-        } else if(((BinOpNode)node).op_tok.type == Type.GTE) {
+        } else if (((BinOpNode) node).op_tok.type == Type.GTE) {
             result = left.get_comparison_gte(right);
-        } else if(((BinOpNode)node).op_tok.matches(Type.KEYWORD, "and")) {
+        } else if (((BinOpNode) node).op_tok.matches(Type.KEYWORD, "and")) {
             result = left.anded_by(right);
-        } else if(((BinOpNode)node).op_tok.matches(Type.KEYWORD, "or")) {
+        } else if (((BinOpNode) node).op_tok.matches(Type.KEYWORD, "or")) {
             result = left.ored_by(right);
         }
-        
-        if (((RunTimeResult)result).error != null) {
-            return res.failure(((RunTimeResult)result).error);
+
+        if (((RunTimeResult) result).error != null) {
+            return res.failure(((RunTimeResult) result).error);
         }
-        
+
         if (node.getClass().getName().equals("NumberNode")) {
             if (result.getClass().getName().equals("RunTimeResult")) {
-                result = ((RunTimeResult)result).value;
+                result = ((RunTimeResult) result).value;
             }
-            
-            return res.success((Object)((Number)result).set_pos(((NumberNode)node).tok.pos_start, ((NumberNode)node).tok.pos_end));
+
+            return res.success((Object) ((Number) result).set_pos(((NumberNode) node).tok.pos_start,
+                    ((NumberNode) node).tok.pos_end));
         } else {
-            result = ((RunTimeResult)result).value;
-            return res.success((Object)((Number)result).set_pos(((BinOpNode)node).op_tok.pos_start, ((BinOpNode)node).op_tok.pos_end));
+            result = ((RunTimeResult) result).value;
+            return res.success((Object) ((Number) result).set_pos(((BinOpNode) node).op_tok.pos_start,
+                    ((BinOpNode) node).op_tok.pos_end));
         }
     }
-    
+
     public Object visit_UnaryOpNode(Object node, Context context) {
         RunTimeResult res = new RunTimeResult();
-        Object number = res.register(this.visit(((UnaryOpNode)node).node, context));
+        Object number = res.register(this.visit(((UnaryOpNode) node).node, context));
 
         if (res.error != null) {
             return res;
         }
 
-        if (((UnaryOpNode)node).op_tok.type == Type.MINUS) {
-            number = ((Number)number).multed_by(new Number(-1));
-        } else if (((UnaryOpNode)node).op_tok.matches(Type.KEYWORD, "not")) {
-            number = ((Number)number).notted();
+        if (((UnaryOpNode) node).op_tok.type == Type.MINUS) {
+            number = ((Number) number).multed_by(new Number(-1));
+        } else if (((UnaryOpNode) node).op_tok.matches(Type.KEYWORD, "not")) {
+            number = ((Number) number).notted();
         }
 
         if (number.getClass().getName().equals("RunTimeResult")) {
-            if (((RunTimeResult)number).error != null) {
-                return res.failure(((RunTimeResult)number).error);
+            if (((RunTimeResult) number).error != null) {
+                return res.failure(((RunTimeResult) number).error);
             }
         }
 
         if (node.getClass().getName().equals("NumberNode")) {
             if (number.getClass().getName().equals("RunTimeResult")) {
-                number = ((RunTimeResult)number).value;
+                number = ((RunTimeResult) number).value;
             }
-            return res.success((Object)((Number)number).set_pos(((NumberNode)node).tok.pos_start, ((NumberNode)node).tok.pos_end));
+            return res.success((Object) ((Number) number).set_pos(((NumberNode) node).tok.pos_start,
+                    ((NumberNode) node).tok.pos_end));
         } else {
             if (number.getClass().getName().equals("RunTimeResult")) {
-                number = ((RunTimeResult)number).value;
+                number = ((RunTimeResult) number).value;
             }
-            return res.success((Object)((Number)number).set_pos(((UnaryOpNode)node).op_tok.pos_start, ((UnaryOpNode)node).op_tok.pos_end));
+            return res.success((Object) ((Number) number).set_pos(((UnaryOpNode) node).op_tok.pos_start,
+                    ((UnaryOpNode) node).op_tok.pos_end));
         }
     }
 
+    public Object visit_IfNode(Object node, Context context) {
+        RunTimeResult res = new RunTimeResult();
+
+        for (IfStatement ifStatement : ((IfNode) node).cases) {
+            Object condition_value = res.register(this.visit(ifStatement.condition, context));
+            if (res.error != null)
+                return res;
+
+            if (((Number) condition_value).is_true()) {
+                Object expr_value = res.register(this.visit(ifStatement.expr, context));
+                if (res.error != null)
+                    return res;
+                return res.success(expr_value);
+            }
+        }
+
+        if (((IfNode) node).else_case != null) {
+            Object else_value = res.register(this.visit(((IfNode) node).else_case, context));
+            if (res.error != null)
+                return res;
+            return res.success(else_value);
+        }
+
+        return res.success(null);
+    }
 }
