@@ -23,7 +23,7 @@ This is an interpreting programming language, a BASIC-like programming language 
 
 Hey Guys, I'm Passionate App Developer & This is my side project.
 checkout my Social Media below!
- - [Youtube](https://www.youtube.com/channel/UCyWaeN7uSlwMAbOMgmOY-7A)
-- [Instagram](https://www.instagram.com/codewithkamal/)
-- [Website](https://codewithkamal.in) 
-- [Email](mailto:contact@codewithkamal.in)
+ - [Youtube](https://www.youtube.com/channel/UC3setbO9Ennr3WhMCvH4XvA)
+- [Twitter (X)](https://x.com/codewithkamal/)
+- [Website](https://kamalpanara.com)
+- [Email](mailto:kamal@panarastudios.in)
